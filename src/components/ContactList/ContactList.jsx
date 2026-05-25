@@ -4,15 +4,10 @@ import { deleteContact } from '../../redux/contactsSlice';
 import css from './ContactList.module.css';
 
 export default function ContactList() {
-  // Безпечно дістаємо дані зі стору. Якщо filter відсутній, ставимо порожній рядок
   const contactsData = useSelector(state => state.contacts);
   const filter = useSelector(state => state.filter) || '';
   const dispatch = useDispatch();
 
-  // Захист від undefined: перевіряємо, де саме лежить масив
-  // 1. Якщо contactsData це вже масив — беремо його.
-  // 2. Якщо це об'єкт і всередині є contacts — беремо його.
-  // 3. В іншому випадку повертаємо порожній масив [].
   const contacts = Array.isArray(contactsData)
     ? contactsData
     : contactsData?.contacts && Array.isArray(contactsData.contacts)

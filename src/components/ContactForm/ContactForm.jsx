@@ -7,7 +7,6 @@ export default function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   
-  // Дістаємо контакти напряму (оскільки в store.js тепер правильний rootReducer)
   const contacts = useSelector(state => state.contacts);
   const dispatch = useDispatch();
 
@@ -19,8 +18,6 @@ export default function ContactForm() {
 
   const handleSubmit = e => {
     e.preventDefault();
-
-    // Перевірка на дублікат (додано оператор опціонального ланцюжка ?. на випадок пустих значень)
     const isExist = contacts.some(
       contact => contact.name?.toLowerCase() === name.toLowerCase()
     );
@@ -30,10 +27,8 @@ export default function ContactForm() {
       return;
     }
 
-    // Відправляємо екшен для додавання контакту
     dispatch(addContact(name, number));
     
-    // Очищаємо інпути форми
     setName('');
     setNumber('');
   };
