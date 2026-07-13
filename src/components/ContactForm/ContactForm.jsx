@@ -18,6 +18,7 @@ export default function ContactForm() {
 
   const handleSubmit = e => {
     e.preventDefault();
+    
     const isExist = contacts.some(
       contact => contact.name?.toLowerCase() === name.toLowerCase()
     );
@@ -61,3 +62,5 @@ export default function ContactForm() {
     </form>
   );
 }
+
+ContactForm.propTypes = {};

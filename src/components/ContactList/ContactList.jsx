@@ -4,15 +4,9 @@ import { deleteContact } from '../../redux/contactsSlice';
 import css from './ContactList.module.css';
 
 export default function ContactList() {
-  const contactsData = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter) || '';
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
-
-  const contacts = Array.isArray(contactsData)
-    ? contactsData
-    : contactsData?.contacts && Array.isArray(contactsData.contacts)
-    ? contactsData.contacts
-    : [];
 
   const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase();
@@ -44,3 +38,5 @@ export default function ContactList() {
     </ul>
   );
 }
+
+ContactList.propTypes = {};
