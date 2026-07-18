@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://6a3ab4a0917c7b14c74dfcfa.mockapi.io/te';
@@ -39,6 +39,13 @@ export const deleteContact = createAsyncThunk(
   }
 );
 
+const contactsAdapter = createEntityAdapter();
+
+const initialState = contactsAdapter.getInitialState({
+  isLoading: false,
+  error: null,
+});
+
 const handlePending = state => {
   state.isLoading = true;
 };
@@ -50,35 +57,35 @@ const handleRejected = (state, action) => {
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: {
-    items: [],
-    isLoading: false,
-    error: null,
-  },
+  initialState,
   extraReducers: builder => {
     builder
       .addCase(fetchContacts.pending, handlePending)
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.items = action.payload;
+        contactsAdapter.setAll(state, action.payload);
       })
       .addCase(fetchContacts.rejected, handleRejected)
       .addCase(addContact.pending, handlePending)
       .addCase(addContact.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.items.push(action.payload);
+        contactsAdapter.addOne(state, action.payload);
       })
       .addCase(addContact.rejected, handleRejected)
       .addCase(deleteContact.pending, handlePending)
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.items = state.items.filter(item => item.id !== action.payload.id);
+        contactsAdapter.removeOne(state, action.payload.id);
       })
       .addCase(deleteContact.rejected, handleRejected);
   },
 });
 
 export const contactsReducer = contactsSlice.reducer;
+
+export const contactsSelectors = contactsAdapter.getSelectors(
+  state => state.contacts
+);

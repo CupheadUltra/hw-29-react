@@ -1,66 +1,37 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
-import css from './ContactForm.module.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact, contactsSelectors } from '../../redux/contactsSlice';
 
-export default function ContactForm() {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-  
-  const contacts = useSelector(state => state.contacts.items);
+export const ContactForm = () => {
   const dispatch = useDispatch();
+  
+  const contacts = useSelector(contactsSelectors.selectAll);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    if (name === 'name') setName(value);
-    if (name === 'number') setNumber(value);
-  };
+  const handleSubmit = event => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const name = form.elements.name.value;
+    const number = form.elements.number.value;
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    
-    const isExist = contacts.some(
-      contact => contact.name?.toLowerCase() === name.toLowerCase()
+    const isDuplicate = contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
-    if (isExist) {
+    if (isDuplicate) {
       alert(`${name} is already in contacts.`);
       return;
     }
 
     dispatch(addContact({ name, number }));
-    
-    setName('');
-    setNumber('');
+    form.reset();
   };
 
   return (
-    <form className={css.form} onSubmit={handleSubmit}>
-      <label className={css.label}>
-        Name
-        <input
-          className={css.input}
-          type="text"
-          name="name"
-          value={name}
-          onChange={handleChange}
-          required
-        />
-      </label>
-      <label className={css.label}>
-        Number
-        <input
-          className={css.input}
-          type="tel"
-          name="number"
-          value={number}
-          onChange={handleChange}
-          required
-        />
-      </label>
-      <button className={css.button} type="submit">Add contact</button>
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="name" required />
+      <input type="tel" name="number" required />
+      <button type="submit">Add contact</button>
     </form>
   );
-}
+};
 
-ContactForm.propTypes = {};
+export default ContactForm;
