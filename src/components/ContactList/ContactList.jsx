@@ -4,8 +4,8 @@ import { deleteContact } from '../../redux/contactsSlice';
 import css from './ContactList.module.css';
 
 export default function ContactList() {
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
+  const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.filter) || '';
   const dispatch = useDispatch();
 
   const getVisibleContacts = () => {
@@ -20,9 +20,9 @@ export default function ContactList() {
   return (
     <ul className={css.list}>
       {visibleContacts.length > 0 ? (
-        visibleContacts.map(({ id, name, number }) => (
+        visibleContacts.map(({ id, name, phone }) => (
           <li className={css.item} key={id}>
-            <p className={css.text}>{name}: {number}</p>
+            <p className={css.text}>{name}: {phone}</p>
             <button
               className={css.button}
               type="button"
